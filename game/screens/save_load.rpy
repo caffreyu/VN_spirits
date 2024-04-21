@@ -14,7 +14,7 @@ define config.thumbnail_height = 400 / 16 * 9
 define gui.file_slot_cols = 1
 define gui.file_slot_rows = 4
 define slot_verticle_spacing = 40
-define text_length = 18
+define text_length = 20
 define slot_x_size = 600
 define slot_y_size = 160
 
@@ -67,6 +67,18 @@ screen file_slots(title):
                             spacing 50
 
                             python:
+                                def get_only_characters(string):
+                                    flag = 0
+                                    res = ""
+                                    for i in range(len(string)):
+                                        curr_char = string[i]
+                                        if curr_char == "{":
+                                            flag = 1
+                                        elif curr_char == "}":
+                                            flag = 0
+                                        elif flag == 0:
+                                            res += curr_char
+                                    return res
                                 slot = i * 2 + 1
                                 name_to_save = ""
                                 strip = lambda string : string \
@@ -75,14 +87,13 @@ screen file_slots(title):
 
                                 if len(_history_list) != 0:
                                     if type(_history_list[-1].who) is NoneType:
-                                        name_to_save = f"Chapter {chap_index} \n" + strip(_history_list[-1].what)
+                                        name_to_save = f"Chapter {chap_index} \n" + strip(get_only_characters(_history_list[-1].what))
                                     else: 
                                         name_to_save = (
                                             f"Chapter {chap_index} \n"
-                                            "【" + _history_list[-1].who + "】 "
-                                            + strip(_history_list[-1].what)
+                                            "【" + get_only_characters(_history_list[-1].who) + "】 "
+                                            + strip(get_only_characters(_history_list[-1].what))
                                         )
-                                        
                                 current_chapter = f"Chapter {chap_index}"
                             
                             button:
@@ -112,22 +123,33 @@ screen file_slots(title):
                                                 style "no_record_slot_button_text"
                             
                             python:
+                                def get_only_characters(string):
+                                    flag = 0
+                                    res = ""
+                                    for i in range(len(string)):
+                                        curr_char = string[i]
+                                        if curr_char == "{":
+                                            flag = 1
+                                        elif curr_char == "}":
+                                            flag = 0
+                                        elif flag == 0:
+                                            res += curr_char
+                                    return res
                                 slot = slot + 1
                                 name_to_save = ""
                                 strip = lambda string : string \
                                     if len(string) <= text_length \
                                     else string[: text_length] + "……"
-                                    
+
                                 if len(_history_list) != 0:
                                     if type(_history_list[-1].who) is NoneType:
-                                        name_to_save = f"Chapter {chap_index} \n" + strip(_history_list[-1].what)
+                                        name_to_save = f"Chapter {chap_index} \n" + strip(get_only_characters(_history_list[-1].what))
                                     else: 
                                         name_to_save = (
                                             f"Chapter {chap_index} \n"
-                                            "【" + _history_list[-1].who + "】 "
-                                            + strip(_history_list[-1].what)
+                                            "【" + get_only_characters(_history_list[-1].who) + "】 "
+                                            + strip(get_only_characters(_history_list[-1].what))
                                         )
-                                
                                 current_chapter = f"Chapter {chap_index}"
                                         
                             button:
